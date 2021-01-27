@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<style>
+		table{
+		    width: 100%;
+		    margin: 20px 0;
+		    border-collapse: collapse;
+			background: #ffffff;
+		}
+		table, th, td{
+		    border: 4px solid #cdcdcd;
+		}
+		table th, table td{
+		    padding: 5px;
+		    text-align: left;
+		}
+	</style>
+  </head>
+	
+  <body>
+	<div>
+	<div id="chatbox">
+	 <p class="botText">Quan ly thong tin sinh vien CUSC</p>	
+	</div>
+	<div>
+		<input id="textInput" type="text" name="msg" placeholder="Message">
+		<input id="buttonInput" type="submit" value="Send">
+	</div>
+    <div>
+		<h2> 1. Thong tin sinh vien </h2>
+		<div id="infosv">
+
+		</div>
+		<h2> 2. Thong tin diem thi </h2>
+		 <table >
+        <thead>
+            <tr>
+                <th>Mon hoc</th>
+                <th>Loai thi</th>
+                <th>Ngay thi</th>
+		<th>Diem thi</th>
+		<th>Lan thi</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    	</table>
+		<h2> 3. Hoc Phi </h2>
+		 <table id="hocphi" >
+        <thead>
+            <tr>
+                <th>Ma so sinh vien</th>
+                <th>Ngay dong</th>
+                <th>So tien</th>
+				
+            </tr>
+        </thead>
+        <tbody id="StudentFees">
+        </tbody>
+    	</table>
+		
+	</div>          
+      <script>
+//2.diemthi
+        function getBotResponse() {
+          var rawText = $("#textInput").val();
+          var userHtml = '<p class="userText"><span>' + rawText + '</span></p>';
+          //$("#textInput").val("");
+          $("#chatbox").append(userHtml);
+          //document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
+          $.get("/diem",{msg:rawText}).done(function(data) {
+            var i=0;
+			for(i=0; i < data.length; i++){
+				var temp = data[i]
+				//var botHtml = '<p class="botText"><span>'+temp[0]+'</span></p>';
+	    		//$("#chatbox").append(botHtml);
+				var markup = "<tr><td>"+temp[0]+"</td><td>" + temp[1] + "</td><td>" + temp[2] + "</td></tr>";
+            	$("table tbody").append(markup);
+			}
+            //console.log(botHtml)
+          });
+        }
+//1.thong tin sv	
+	function getInfoStudent(){
+			var mssv = $("#textInput").val();
+			//var userHtml = '<p class="userText"><span>' + mssv + '</span></p>';
+			//$("#chatbox").append(userHtml);
+			$.get("/sinhvien",{msg:mssv}).done(function(data){
+			var i=0;
+			var temp=data[0];
+			var info = "<p>Ma so sinh vien: "+temp[0]+"</p> <p>Ma lop: "+temp[1]+"</p><p>Ho ten: "+temp[2]+"</p><p>Ngay sinh: "+temp[3]+"</p><p>Thang sinh: "+temp[4]+"</p><p>Nam sinh: "+temp[5]+"</p><p>Gioi tinh: "+temp[6]+"</p><p>PortalID: "+temp[7]+"</p><p>Dien thoa: "+temp[8]+"</p><p>Dia chi: "+temp[9]+"</p><p>Email: "+temp[10]+"</p><p>Ghi chu: "+temp[11]+"</p><p>Ten nguoi than: "+temp[12]+"</p><p>Email nguoi than: "+temp[13]+"</p><p>Dien thoai nguoi than: "+temp[14]+"</p><p>So CMND: "+temp[15]+"</p><p>Noi cap: "+temp[16]+"</p><p>Ngay cap: "+temp[17]+"</p><p>Moi quan he voi sinh vien: "+temp[18]+"</p><p>Zalo nguoi than: "+temp[19]+"</p><p>Zalo sinh vien: "+temp[20]+"</p>";				
+           	$("#infosv").append(info);
+			});		
+		}
+
+
+        $("#buttonInput").click(function() {
+            //if (document.getElementById("textInput").value != "") {
+		getInfoStudent();
+                getBotResponse();
+//		getFee();
+            //}
+        })
+      </script>
+    </div>
+  </body>
+</html>
